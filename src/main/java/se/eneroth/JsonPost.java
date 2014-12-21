@@ -20,4 +20,19 @@ public class JsonPost {
 
         return jsonString;
     }
+
+    @Path("add")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getIt(Adder adder) {
+        Adder reply = new Adder();
+        reply.setTal1(adder.getTal1());
+        reply.setTal2(adder.getTal2());
+        reply.setSum(adder.getTal1() + adder.getTal2());
+        Gson gson = new GsonBuilder().create();
+        String jsonString = gson.toJson(reply);
+
+        return jsonString;
+    }
 }
