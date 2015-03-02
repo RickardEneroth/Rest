@@ -1,7 +1,6 @@
 package se.eneroth;
 
 import java.util.Map;
-
 import java.util.HashMap;
 import java.util.UUID;
 import java.security.GeneralSecurityException;
@@ -30,33 +29,33 @@ public final class RestAuthenticator {
         return authenticator;
     }
 
-    public String login( String serviceKey, String username, String password ) throws LoginException {
-        if (apiKeyStorage.containsKey(serviceKey)) {
-            String usernameMatch = apiKeyStorage.get(serviceKey);
+    public String login(String apiKey, String username, String password) throws LoginException {
+        if (apiKeyStorage.containsKey(apiKey)) {
+            String usernameMatch = apiKeyStorage.get(apiKey);
 
             if (usernameMatch.equals(username) && usersStorage.containsKey(username)) {
                 String passwordMatch = usersStorage.get(username);
 
                 if (passwordMatch.equals(password)) {
-                    String authToken = UUID.randomUUID().toString();
-                    sessionTokensStorage.put(authToken, username);
+                    String sessionToken = UUID.randomUUID().toString();
+                    sessionTokensStorage.put(sessionToken, username);
 
-                    return authToken;
+                    return sessionToken;
                 }
             }
         }
 
-        throw new LoginException( "Don't Come Here Again!" );
+        throw new LoginException("Don't Come Here Again!");
     }
 
-    public boolean isAuthTokenValid( String serviceKey, String authToken ) {
-        if ( isServiceKeyValid( serviceKey ) ) {
-            String usernameMatch1 = apiKeyStorage.get( serviceKey );
+    public boolean isAuthTokenValid(String apiKey, String sessionToken) {
+        if (isApiKeyValid(apiKey)) {
+            String usernameMatch1 = apiKeyStorage.get(apiKey);
 
-            if ( sessionTokensStorage.containsKey( authToken ) ) {
-                String usernameMatch2 = sessionTokensStorage.get( authToken );
+            if (sessionTokensStorage.containsKey(sessionToken)) {
+                String usernameMatch2 = sessionTokensStorage.get(sessionToken);
 
-                if ( usernameMatch1.equals( usernameMatch2 ) ) {
+                if (usernameMatch1.equals(usernameMatch2)) {
                     return true;
                 }
             }
@@ -66,24 +65,24 @@ public final class RestAuthenticator {
     }
 
 
-    public boolean isServiceKeyValid( String serviceKey ) {
-        return apiKeyStorage.containsKey( serviceKey );
+    public boolean isApiKeyValid(String apiKey) {
+        return apiKeyStorage.containsKey(apiKey);
     }
 
-    public void logout( String serviceKey, String authToken ) throws GeneralSecurityException {
-        if ( apiKeyStorage.containsKey( serviceKey ) ) {
-            String usernameMatch1 = apiKeyStorage.get( serviceKey );
+    public void logout(String apiKey, String sessionToken) throws GeneralSecurityException {
+        if (apiKeyStorage.containsKey(apiKey)) {
+            String usernameMatch1 = apiKeyStorage.get(apiKey);
 
-            if ( sessionTokensStorage.containsKey( authToken ) ) {
-                String usernameMatch2 = sessionTokensStorage.get( authToken );
+            if (sessionTokensStorage.containsKey(sessionToken)) {
+                String usernameMatch2 = sessionTokensStorage.get(sessionToken);
 
-                if ( usernameMatch1.equals( usernameMatch2 ) ) {
-                    sessionTokensStorage.remove( authToken );
+                if (usernameMatch1.equals(usernameMatch2)) {
+                    sessionTokensStorage.remove(sessionToken);
                     return;
                 }
             }
         }
 
-        throw new GeneralSecurityException( "Invalid service key and authorization token match." );
+        throw new GeneralSecurityException("Invalid service key and authorization token match.");
     }
 }

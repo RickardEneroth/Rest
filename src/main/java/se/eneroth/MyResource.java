@@ -40,7 +40,7 @@ public class MyResource {
         RestAuthenticator d = RestAuthenticator.getInstance();
         String apiKey = httpHeaders.getHeaderString("api-key");
         if (d.isAuthTokenValid(apiKey, token)) {
-            return "Hello Jersey!";
+            return "Hello Jersey!  You are logged in correct!";
         } else {
             return "Not logged in correct.....";
         }
